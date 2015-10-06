@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import random
+from copy import deepcopy
 
 
 def get_list_element():
@@ -39,23 +40,56 @@ def total(tree):
     return total(tree.left) + total(tree.right) + tree.value
 
 
-def print_tree(tree):
-    print_list = []
-    answer = ""
+def calculate_tree(tree):
+    cal_list = []
     max_diff = 0
-    print_list.append(tree)
-    while len(print_list) > 0:
-        for child in print_list[0].children:
-            diff = (print_list[0].value - child.value)
+    cal_list.append(tree)
+    while len(cal_list) > 0:
+        for cal_child in cal_list[0].children:
+            cal_list.append(cal_child)
+            diff = (cal_list[0].value - cal_child.value)
             if diff < 0:
                 diff *= -1
             if max_diff < diff:
                 max_diff = diff
+        cal_list.pop(0)
+    return max_diff
+
+
+def print_tree(tree):
+    print_list = []
+    answer = ""
+    print_list.append(tree)
+    while len(print_list) > 0:
+        for child in print_list[0].children:
             print_list.append(child)
         answer += str(print_list[0].value) + " "
         print_list.pop(0)
-    print max_diff
-    print answer
+    return answer
+
+
+def change_node_value(tree, old_value, new_value):
+    change_list = []
+    answer = ""
+    change_list.append(tree)
+    while len(change_list) > 0:
+        for child in change_list[0].children:
+            if child.value is old_value:
+                child.value = new_value
+                return
+            change_list.append(child)
+        change_list.pop(0)
+
+
+def set_backup_tree(tree):
+    global backup_tree
+    backup_tree = None
+    backup_tree = deepcopy(tree)
+
+
+def get_backup_tree():
+    global backup_tree
+    return backup_tree
 
 
 class Tree:
@@ -64,11 +98,23 @@ class Tree:
         self.children = []
 
 
-k = 7
+k = 3
 num_range = 1 + 3*(2**(k-1)-1)
-alist = range(num_range+1)
-alist.remove(0)
-children_list = []
-root = None
-root = create_tree()
-print_tree(root)
+best_diff = num_range
+best_tree = None
+elem_list = range(num_range+1)
+elem_list.remove(0)
+backup_tree = None
+for x in range(1000):
+    alist = None
+    alist = deepcopy(elem_list)
+    children_list = []
+    root = None
+    root = create_tree()
+    cal_diff = calculate_tree(root)
+    result_tree = print_tree(root)
+    if cal_diff < best_diff:
+        best_diff = deepcopy(cal_diff)
+        best_tree = deepcopy(root)
+print best_diff
+print print_tree(best_tree)
