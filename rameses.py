@@ -3,7 +3,7 @@ import collections
 import math
 
 start_time = time.clock()
-initial_state = '.x...x..x...x..x'
+initial_state = 'xx.....x...x...x'
 GRID = 4
 if collections.Counter(initial_state)['x']%2 == 0:
     MAX = 'odd'
@@ -78,7 +78,7 @@ def eval_fun(state, position):
 
 
 def cutoff_test(state,position):
-    if (time.clock() - start_time == 4.9) or eval_fun(state, position) in [-1,1]:
+    if eval_fun(state, position) in [-1,1]  or (time.clock() - start_time >= 5):
         return True
 
 def argmin(seq, fn):
@@ -112,6 +112,7 @@ def min_max_search(state):
         v = -float("inf")
         for a in actions(state):
             v = max(v, min_value(result(state,a)))
+        #if time.clock() - start_time <= 4.9:
         return v
 
     def min_value(state, position = 1):
@@ -123,6 +124,7 @@ def min_max_search(state):
         v = float("inf")
         for a in actions(state):
             v = min(v, max_value(result(state,a)))
+        #if time.clock() - start_time <= 4.9:
         return v
 
     return argmax(actions(state), lambda a: min_value(result(state, a)))
