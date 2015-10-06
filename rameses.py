@@ -3,12 +3,12 @@ import collections
 import math
 
 start_time = time.clock()
-initial_state = '......x...x..x'
+initial_state = '.x...x..x...x..x'
 GRID = 4
 if collections.Counter(initial_state)['x']%2 == 0:
-    MAX = 'even'
-else:
     MAX = 'odd'
+else:
+    MAX = 'even'
 
 def actions(state):
     positions = []
@@ -77,8 +77,8 @@ def eval_fun(state, position):
     return min_max
 
 
-def cutoff_test(state):
-    if time.clock() - start_time == 4.9:
+def cutoff_test(state,position):
+    if (time.clock() - start_time == 4.9) or eval_fun(state, position) in [-1,1]:
         return True
 
 def argmin(seq, fn):
@@ -103,10 +103,10 @@ def argmax(seq, fn):
 def min_max_search(state):
     #children = successors(state)
 
-    def max_value(state, *position):
-        if cutoff_test(state):
+    def max_value(state, position = 1):
+        if cutoff_test(state,position):
             if (collections.Counter(state)['x']%2 !=0 and MAX=='even') or (collections.Counter(state)['x']%2 ==0 and MAX=='odd'):
-                return eval_fun(state, position[0])
+                return eval_fun(state, position)
             else:
                 return -1 * eval_fun(state, position)
         v = -float("inf")
@@ -114,12 +114,12 @@ def min_max_search(state):
             v = max(v, min_value(result(state,a)))
         return v
 
-    def min_value(state, *position):
-        if cutoff_test(state):
+    def min_value(state, position = 1):
+        if cutoff_test(state,position):
             if (collections.Counter(state)['x']%2 !=0 and MAX=='even') or (collections.Counter(state)['x']%2 ==0 and MAX=='odd'):
                 return eval_fun(state, position)
             else:
-                return -1 * eval_fun(state, position[0])
+                return -1 * eval_fun(state, position)
         v = float("inf")
         for a in actions(state):
             v = min(v, max_value(result(state,a)))
@@ -133,6 +133,6 @@ def min_max_search(state):
 # print child
 term_test = min_max_search(initial_state)
 print term_test
-#print result(initial_state,term_test)
+print result(initial_state,term_test)
 time.clock()
 #print round(end_time - start_time, 5)
