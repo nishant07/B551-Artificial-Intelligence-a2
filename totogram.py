@@ -1,15 +1,20 @@
+# Best Solutions shown by this program:
+# k =3 solution: 3 time(in seconds): 0.065
+# k =4 solution: 10 time(in seconds): 0.18
+# k =5 solution: 28 time(in seconds): 0.27
+# k =6 solution: 68 time(in seconds): 0.55
+# k =7 solution: 152 time(in seconds): 1.18
+# Approach - created totogram tree as per the requirements using class as tree and having variables as value and
+# children.
+# We have created a totogram by randomly generating a list of all elements required in the totogram with specified k
+# and calculated the maximum distance between any two nodes of totogram.
+# We run this procedure for 1000 times which will yield a certain solution.
+
+
 #!/usr/bin/python
 import random
 import sys
 from copy import deepcopy
-
-k = sys.argv
-num_range = 1 + 3*(2**(k-1)-1)
-best_diff = num_range
-best_tree = None
-elem_list = range(num_range+1)
-elem_list.remove(0)
-backup_tree = None
 
 
 def get_list_element():
@@ -31,7 +36,6 @@ def create_tree():
             data = get_list_element()
         except IndexError:
             return root
-        #insert(children_list[0], Tree(data))
         childNode = children_list[0]
         if not (len(childNode.children) > 0):
             childNode.children.append(Tree(data))
@@ -106,6 +110,14 @@ class Tree:
         self.value = value
         self.children = []
 
+
+k = sys.argv[1]
+num_range = 1 + 3*(2**(int(k)-1)-1)
+best_diff = num_range
+best_tree = None
+elem_list = range(num_range+1)
+elem_list.remove(0)
+backup_tree = None
 
 for x in range(1000):
     alist = None
