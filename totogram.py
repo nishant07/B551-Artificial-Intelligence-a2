@@ -1,6 +1,15 @@
 #!/usr/bin/python
 import random
+import sys
 from copy import deepcopy
+
+k = sys.argv
+num_range = 1 + 3*(2**(k-1)-1)
+best_diff = num_range
+best_tree = None
+elem_list = range(num_range+1)
+elem_list.remove(0)
+backup_tree = None
 
 
 def get_list_element():
@@ -98,13 +107,6 @@ class Tree:
         self.children = []
 
 
-k = 3
-num_range = 1 + 3*(2**(k-1)-1)
-best_diff = num_range
-best_tree = None
-elem_list = range(num_range+1)
-elem_list.remove(0)
-backup_tree = None
 for x in range(1000):
     alist = None
     alist = deepcopy(elem_list)
