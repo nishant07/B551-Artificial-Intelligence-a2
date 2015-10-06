@@ -3,18 +3,26 @@ import collections
 import math
 
 start_time = time.clock()
-initial_state = ".x......x"
+initial_state = '.x......x'
 GRID = 3
+if collections.Counter(initial_state)['x']%2 == 0:
+    MAX = 'even'
+else:
+    MAX = 'odd'
 
-
-def successors(state):
-    children = []
+def actions(state):
+    positions = []
     for i in range(0, len(state)):
         temp_list = list(state)
         if temp_list[i] != 'x':
-            temp_list[i] = 'x'
-            children.append((''.join(temp_list), i))
-    return children
+ #           temp_list[i] = 'x'
+            positions.append(i)
+    return tuple(positions)
+
+def result(state,position):
+    temp_list = list(state)
+    temp_list[position] = 'x'
+    return ''.join()
 
 
 def eval_fun(state, position):
