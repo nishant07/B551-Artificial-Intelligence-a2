@@ -1,6 +1,6 @@
 """
-We have used min_max algorithm to solve this problem. 
-We calculate min_max value of a current state by counting to total number of empty spaces in the row, column and diagonal in which 'x' is added in current move.
+We have used alpha-beta min_max algorithm to solve this problem. 
+We calculate alpha-beta min_max value of a current state by counting to total number of empty spaces in the row, column and diagonal in which 'x' is added in current move.
 """
 import time
 import collections
@@ -69,17 +69,17 @@ def eval_fun(state, position):
 
     for i in range(0, len(state), GRID):
         state_matrix.append(state[i:i + GRID])
-    min_max += collections.Counter(state_matrix[row])['.']
+    min_max += (collections.Counter(state_matrix[row])['.'] - collections.Counter(state_matrix[row])['x'])
     j = GRID - 1
     for i in range(0, GRID):
-        min_max += collections.Counter(state_matrix[i][column])['.']
+        min_max += (collections.Counter(state_matrix[i][column])['.'] - collections.Counter(state_matrix[row])['x'])
         if row == column or row + column == GRID - 1:
             if state_matrix[i][i] == '.' and i != row and j != column:
                 min_max += 1
             if state_matrix[i][j] == '.' and i != row and j != column:
                 min_max += 1
         j -= 1
-
+    print min_max
     return min_max
 
 
@@ -98,34 +98,42 @@ def argmin(seq, fn):
     return best
 
 
-def min_max_search(state):
+def alphabeta_min_max_search(state):
     #Return the best  possible move for MAX player in given time limit depending on the given state
 
     print 'Thinking...'
-    def max_value(state, position = 1):
+    def max_value(state, alpha, beta, position = 1):
         if cutoff_test(state,position):
+            #Return negative utility value is it's a move of MIN player or positive
             if (collections.Counter(state)['x']%2 !=0 and MAX=='even') or (collections.Counter(state)['x']%2 ==0 and MAX=='odd'):
                 return eval_fun(state, position)
             else:
                 return -1 * eval_fun(state, position)
         v = -float("inf")
         for a in actions(state):
-            v = max(v, min_value(result(state,a)))
+            v = max(v, min_value(result(state,a),alpha,beta,a))
+            if v>= beta:
+                return v
+            alpha = max(alpha,v)
         return v
 
-    def min_value(state, position = 1):
+    def min_value(state, alpha, beta, position = 1):
         if cutoff_test(state,position):
+            #Return negative utility value if it's a move of MAX player or positive
             if (collections.Counter(state)['x']%2 !=0 and MAX=='even') or (collections.Counter(state)['x']%2 ==0 and MAX=='odd'):
                 return -1 * eval_fun(state, position)
             else:
                 return eval_fun(state, position)
         v = float("inf")
         for a in actions(state):
-            v = min(v, max_value(result(state,a)))
+            v = min(v, max_value(result(state,a),alpha,beta,a))
+            if v <= alpha:
+                return v
+            beta = min(beta,v)
         return v
 
-    return argmin(actions(state), lambda a: -min_value(result(state, a)))
+    return argmin(actions(state), lambda a: -min_value(result(state, a),-float("inf"),float("inf")))
 
-next_position = min_max_search(initial_state)
+next_position = alphabeta_min_max_search(initial_state)
 print 'Put Cross at position:'+str(next_position+1)
 print result(initial_state,next_position)
