@@ -85,7 +85,7 @@ def eval_fun(state, position):
 
 def cutoff_test(state,position):
     #Cutoff the recursion for finding min-max value if the mentioned time limit is reached or terminal node has been reached
-    if eval_fun(state, position) in [-1,1]  or (time.clock() - start_time >= TIME_LIMIT):
+    if eval_fun(state, position) in [-1,1]  or (time.clock() - start_time >= TIME_LIMIT-0.5): #Adjusting time limit check to accomodate pre-calculations
         return True
 
 def argmin(seq, fn):
@@ -100,7 +100,7 @@ def argmin(seq, fn):
 
 def min_max_search(state):
     #Return the best  possible move for MAX player in given time limit depending on the given state
-    
+
     print 'Thinking...'
     def max_value(state, position = 1):
         if cutoff_test(state,position):
